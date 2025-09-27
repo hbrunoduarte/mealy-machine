@@ -4,6 +4,7 @@ import dados.MaquinaMealy;
 import exceptions.AutomatoException;
 import exceptions.ErroArquivoException;
 import leitura.CriarMaquina;
+import leitura.LerPalavra;
 
 import java.io.FileNotFoundException;
 
@@ -14,7 +15,12 @@ public class Main {
 
     public static void main(String[] args) {
 
-        CriarMaquina criarMaquina = new CriarMaquina("src/MM");//args[MAQUINA_MEALY.ordinal()]);
+        if (args.length != 2) {
+            System.err.println("[2 parâmetros de entrada são esperados]");
+            throw new RuntimeException();
+        }
+
+        CriarMaquina criarMaquina = new CriarMaquina(args[MAQUINA_MEALY.ordinal()]);
 
         MaquinaMealy mealy;
         try {
@@ -33,10 +39,18 @@ public class Main {
             throw new RuntimeException();
         }
 
-        boolean aceitou = mealy.computarPalavra("   xxxx.    xxxxxx.x     xxxxx x  x.");//args[PALAVRA_ENTRADA.ordinal()]);
+        String entrada;
+        try {
+            entrada = LerPalavra.lerPalavra(args[PALAVRA_ENTRADA.ordinal()]);
+        } catch (FileNotFoundException e) {
+            System.err.println("[Arquivo de entrada da palavra não encontrado]");
+            throw new RuntimeException(e);
+        }
+
+        boolean aceitou = mealy.computarPalavra(entrada);
 
         if (aceitou)
-            System.out.println("\nA palavra foi aceita!\nSaída: %s\n\n".formatted(mealy.getSaida()));
+            System.out.printf("\nA palavra foi aceita!\nSaída:\n%s\n\n".formatted(mealy.getSaida()));
         else
             System.out.println("\nA palavra foi rejeitada!\n\n");
 

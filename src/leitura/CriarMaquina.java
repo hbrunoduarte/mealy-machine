@@ -18,10 +18,21 @@ public class CriarMaquina {
 
     private final String nomeArquivo;
 
-    private final char SEPARADOR = ' ';
+    private static final char SEPARADOR = ' ';
+    private static final char PALAVRA_VAZIA = 'e';
+    private static final char ESCAPE = '\\';
 
     public CriarMaquina(String nomeArquivo) {
         this.nomeArquivo = nomeArquivo;
+    }
+
+    private String caractereEscape(String c) {
+        if (c.equals("\\n"))
+            return "\n";
+        else if (c.equals("\\t"))
+            return "\t";
+        else
+            return null;
     }
 
     private String lerCampo(String linha) {
@@ -86,6 +97,9 @@ public class CriarMaquina {
         }
         saida = s.toString();
 
+        if (saida.equals(String.valueOf(PALAVRA_VAZIA)))
+            saida = "";
+
         campos.add(origem);
         campos.add(entrada);
         campos.add(destino);
@@ -120,7 +134,7 @@ public class CriarMaquina {
             boolean inicial = false, terminal = false;
             if (nomesEstados.get(i).equals(nomeEstadoInicial))
                 inicial = true;
-            else if (nomesEstadosFinais.contains(nomesEstados.get(i)))
+            if (nomesEstadosFinais.contains(nomesEstados.get(i)))
                 terminal = true;
 
             estados.add(new Estado(nomesEstados.get(i), inicial, terminal));
@@ -136,18 +150,18 @@ public class CriarMaquina {
             Estado origem = getEstado(estados, componentesTransicao.get(ORIGEM.ordinal()));
 
             Character entrada = componentesTransicao.get(ENTRADA.ordinal()).charAt(0);
-            if (!sigma.contains(String.valueOf(entrada))) throw new EntradaInvalidaException(entrada);
+            if (entrada == PALAVRA_VAZIA || !sigma.contains(String.valueOf(entrada)))
+                throw new EntradaInvalidaException(entrada);
 
             Estado destino = getEstado(estados, componentesTransicao.get(DESTINO.ordinal()));
 
-            String saida;
-            if (componentesTransicao.size() == 4) {
-                saida = componentesTransicao.get(SAIDA.ordinal());
+            String saida = componentesTransicao.get(SAIDA.ordinal());
+            if (!saida.contains(String.valueOf(ESCAPE))) {
                 for (int i = 0; i < saida.length(); i++)
-                    if (!delta.contains(String.valueOf(saida.charAt(i)))) throw new SaidaInvalidaException(saida);
-
+                    if (saida.charAt(i) != PALAVRA_VAZIA && !delta.contains(String.valueOf(saida.charAt(i))))
+                        throw new SaidaInvalidaException(saida);
             } else {
-                saida = "";
+                saida = caractereEscape(saida);
             }
 
             origem.addTransicao(entrada, destino, saida);
