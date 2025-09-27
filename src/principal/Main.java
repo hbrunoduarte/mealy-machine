@@ -1,6 +1,8 @@
 package principal;
 
 import dados.MaquinaMealy;
+import escrita.CriarPPM;
+import exceptions.ArquivoFractalException;
 import exceptions.AutomatoException;
 import exceptions.ErroArquivoException;
 import leitura.CriarMaquina;
@@ -49,10 +51,16 @@ public class Main {
 
         boolean aceitou = mealy.computarPalavra(entrada);
 
-        if (aceitou)
-            System.out.printf("\nA palavra foi aceita!\nSaída:\n%s\n\n".formatted(mealy.getSaida()));
-        else
+        if (aceitou) {
+            try {
+                CriarPPM.criar(mealy.getSaida());
+            } catch (ArquivoFractalException e) {
+                System.err.println(e.getMessage());
+                throw new RuntimeException();
+            }
+            System.out.println("\nA palavra foi aceita!\n[PPM Gerado]\n\n");
+        } else {
             System.out.println("\nA palavra foi rejeitada!\n\n");
-
+        }
     }
 }
