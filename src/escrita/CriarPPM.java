@@ -14,7 +14,7 @@ public class CriarPPM {
 
         FileWriter arq;
         try {
-            arq = new FileWriter("src/fractal.ppm");
+            arq = new FileWriter("arquivos/fractal.ppm");
         } catch (IOException e) {
             throw new ArquivoFractalException();
         }
