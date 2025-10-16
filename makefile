@@ -1,3 +1,5 @@
+.SILENT:
+
 # Compilador e comandos
 JAVAC = javac
 JAVA = java
@@ -34,7 +36,7 @@ clean:
 
 
 # Para selecionar MM e palavra especifica:
-# make MM=arquivos/MM PALAVRA=arquivos/palavra
+# make MM=arquivos/MM.txt PALAVRA=arquivos/w.txt
 
 # Caso execute apenas 'make'
 # Usa os txt padrao
